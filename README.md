@@ -16,5 +16,13 @@ Deliverable 3: Add an Additional Map
 
 Results: 
 
+Deliverable 1:
+
 ![Earthquake_tectonicpalte](images/EQ_data1.png)
+
+Deliverable 2:
+
+![Earthquake_tectonicpalte](images/EQ_data2.png)
+
+
 
