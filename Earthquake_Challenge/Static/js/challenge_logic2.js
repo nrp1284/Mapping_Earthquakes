@@ -22,6 +22,13 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 	accessToken: API_KEY
 });
 
+// We create the dark view tile layer that will be an option for our map.
+let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    accessToken: API_KEY
+});
+
 // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
 	center: [40.7, -94.5],
@@ -29,10 +36,13 @@ let map = L.map('mapid', {
 	layers: [streets]
 });
 
+
 // Create a base layer that holds all three maps.
 let baseMaps = {
   "Streets": streets,
-  "Satellite": satelliteStreets
+  "Satellite": satelliteStreets,
+  "Dark": dark
+   
 };
 
 // 1. Add a 3rd layer group for the major earthquake data.
@@ -127,11 +137,17 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
 // 3. Retrieve the major earthquake GeoJSON data >4.5 mag for the week.
 d3.json().then(function(data) {
 
-// 4. Use the same style as the earthquake data.
-let allEarthquakes = {
-  color: "#f05e1b",
-  weight: 2
-}
+  function styleInfo(feature) {
+    return {
+      opacity: 1,
+      fillOpacity: 1,
+      fillColor: getColor(feature.properties.mag),
+      color: "#000000",
+      radius: getRadius(feature.properties.mag),
+      stroke: true,
+      weight: 0.5
+    };
+  }
 
 // 5. Change the color function to use three colors for the major earthquakes based on the magnitude of the earthquake.
 for (var i = 0; i < magnitudes.length; i++) {
@@ -230,6 +246,7 @@ legend.onAdd = function() {
     weight: 2
   }
 
+  
    // Retrieve the tectonic GeoJSON data.
 d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json").then(function(data) {
     //Creating a GeoJSON layer with the retrieved data.
